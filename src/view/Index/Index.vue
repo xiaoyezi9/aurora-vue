@@ -2,7 +2,7 @@
  * @Author: 爱吃香菜的猹
  * @Date: 2022-11-14 21:19:28
  * @LastEditors: 爱吃香菜的猹
- * @LastEditTime: 2022-11-16 10:36:10
+ * @LastEditTime: 2022-11-27 16:52:50
  * @FilePath: \Aurora\src\view\Index\Index.vue
  * @Description: 
 -->
@@ -22,7 +22,7 @@
               <a class="nav-link" href="#footer">了解</a>
             </li>
             <li class="nav-item">
-              <button type="button" class="btn btn-outline-light btn-lg registerBtn" @click="login">登录</button>
+              <button type="button" class="btn btn-outline-light btn-lg registerBtn" @click="login(true)">登录</button>
             </li>
           </ul>
 
@@ -32,7 +32,8 @@
       <div class="row">
         <div class="col-lg-6">
           <h1 class="big-heading">在这里，每个人都可以找到一个有趣的灵魂</h1>
-          <button type="button" class="btn btn-outline-light btn-lg download-button" @click="router.push('/login')">注册账户</button>
+          <button type="button" class="btn btn-outline-light btn-lg download-button"
+            @click="register(false)">注册账户</button>
         </div>
         <div class="col-lg-6">
           <img class="title-image" src="@/assets/img/man.png" alt="iphone-mockup">
@@ -92,9 +93,19 @@
 </template>
 
 <script setup>
-import {useRouter} from 'vue-router'
-const router=useRouter()
-
+import { useRouter } from 'vue-router'
+// @ts-ignore
+import { useCommonStore } from '@/store/common'
+const store = useCommonStore()
+const router = useRouter()
+const login = (type) => {
+ store.isLogin = type
+ router.push('/login')
+}
+const register=(type)=>{
+  store.isLogin = type
+ router.push('/login')
+}
 </script>
 
 <script>

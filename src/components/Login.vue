@@ -2,36 +2,45 @@
  * @Author: 爱吃香菜的猹
  * @Date: 2022-11-15 22:20:09
  * @LastEditors: 爱吃香菜的猹
- * @LastEditTime: 2022-11-22 23:55:25
+ * @LastEditTime: 2022-11-30 18:30:38
  * @FilePath: \Aurora\src\components\Login.vue
  * @Description: 
 -->
 <template>
     <div class="login-register">
         <div class="contain">
-            <div class="big-box" :class="{ active: isLogin }">
-                <div class="big-contain" key="bigContainLogin" v-if="isLogin">
+            <div class="big-box" :class="{ active: store.isLogin }">
+                <div class="big-contain" key="bigContainLogin" v-if="store.isLogin">
                     <div class="btitle">账户登录</div>
                     <div class="bform">
-                        <input type="email" placeholder="邮箱" v-model="form.useremail">
-                        <span class="errTips" >* 邮箱填写错误 *</span>
-                        <input type="password" placeholder="密码" v-model="form.userpwd">
-                        <span class="errTips" v-if="passwordError">* 密码填写错误 *</span>
+                        <input type="text" placeholder="用户名" v-model="form.name">
+                        <input type="password" placeholder="密码" v-model="form.password">
                     </div>
                     <button class="bbutton" @click="login">登录</button>
                 </div>
                 <div class="big-contain" key="bigContainRegister" v-else>
                     <div class="btitle">创建账户</div>
                     <div class="bform">
-                        <input type="text" placeholder="用户名" v-model="form.username">
+                        <input type="text" placeholder="用户名" v-model="form.name">
                         <span class="errTips" v-if="existed">* 用户名已经存在！ *</span>
-                        <input type="password" placeholder="密码" v-model="form.userpwd">
+                         <n-space>
+                            <n-radio :checked="checkedValue === 'male'" value="male"
+                                name="basic-demo" @change="handleChange" size="large" style="font-size: 20px; font-family:'Montserrat-Black';">
+                               男生
+                            </n-radio>
+                            <n-radio :checked="checkedValue === 'female'" value="female" name="basic-demo" style="font-size: 20px;font-family:'Montserrat-Black';"
+                                @change="handleChange" size="large">
+                                女生
+                            </n-radio>
+                        </n-space>
+                        <input type="password" placeholder="密码" v-model="form.password">
                     </div>
                     <button class="bbutton" @click="register">注册</button>
                 </div>
             </div>
-            <div class="small-box" :class="{ active: isLogin }">
-                <div class="small-contain" key="smallContainRegister" v-if="isLogin">
+<!-- 切换登录注册 -->
+            <div class="small-box" :class="{ active: store.isLogin }">
+                <div class="small-contain" key="smallContainRegister" v-if="store.isLogin">
                     <div class="stitle">你好，朋友!</div>
                     <p class="scontent">开始注册，和我们一起旅行</p>
                     <button class="sbutton" @click="changeType">注册</button>
@@ -48,82 +57,61 @@
 </template>
 
 <script setup >
+
 import { reactive, ref } from 'vue';
-let isLogin = ref(false)
-let passwordError = ref(false)
+import { reqRegister, reqLogin } from "../api/index"
+import { useRouter } from 'vue-router'
+import { useCommonStore } from '../store/common'
 let existed = ref(false)
+const router = useRouter()
+const store = useCommonStore()
 const form = reactive({
-    username: '',
-    userpwd: ''
+    name: '',
+    password: ''
 })
+const checkedValue=ref(null)
+const handleChange=(e)=> {
+        checkedValue.value = e.target.value;
+        // console.log(checkedValue.value);
+      }
 const changeType = () => {
-    isLogin.value = !isLogin.value
-    form.username = ''
-    form.userpwd = ''
+    store.changeBtn()
+    form.name = ''
+    form.password = ''
 }
-const login = () => {
-    if (form.username != "" && form.userpwd != "") {
+const login = async () => {
+    if (form.name != "" && form.password != "") {
         //发送请求
-        // $axios({
-        // 	method:'post',
-        // 	url: 'http://127.0.0.1:10520/api/user/login',
-        // 	data: {
-        // 		email: form.useremail,
-        // 		password: form.userpwd
-        // 	}
-        // })
-        // .then( res => {
-        // 	switch(res.data){
-        // 		case 0: 
-        // 			alert("登陆成功！");
-        // 			break;
-        // 		case -1:
-        // 			emailError = true;
-        // 			break;
-        // 		case 1:
-        // 			passwordError = true;
-        // 			break;
-        // 	}
-        // })
-        // .catch( err => {
-        // 	console.log(err);
-        // })
-        // } else{
-        // 	alert("填写不能为空！");
+        await reqLogin(form).then(res => {
+            if (res.code === 200) {
+                sessionStorage.setItem("token", res.token)
+                router.push('/home')
+            }
+
+        }).catch(err => {
+            console.log(err);
+        })
+    } else {
+        alert("填写不能为空！");
     }
 }
-    //注册
-function register() {
-        	if(form.username != "" && form.userpwd != ""){
-        		axios({
-        			method:'post',
-        			url: 'http://127.0.0.1:10520/api/user/add',
-        			data: {
-        				username: form.username,
-        				password: form.userpwd
-        			}
-        		})
-        		.then( res => {
-        			switch(res.data){
-        				case 0:
-        					alert("注册成功！");
-        					login();
-        					break;
-        				case -1:
-        					this.existed = true;
-        					break;
-        			}
-        		})
-        		.catch( err => {
-        			console.log(err);
-        		})
-        	} else {
-        		alert("填写不能为空！");
-        	}
-        }
-       
+//注册
+async function register() {
+    if (form.name != "" && form.password != "") {
+        form.sex=checkedValue.value
+        await reqRegister(form).then(res => {
+            if (res.code == 200) {
+                login()
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    } else {
+        alert("填写不能为空！");
     }
 }
+
+
 </script>
 
 <script>
@@ -255,7 +243,7 @@ export default {
 }
 
 .scontent {
-    font-size:1.4em;
+    font-size: 1.4em;
     color: #ffffff;
     text-align: center;
     padding: 2em 4em;
