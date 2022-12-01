@@ -2,7 +2,7 @@
  * @Author: 爱吃香菜的猹
  * @Date: 2022-11-27 17:10:54
  * @LastEditors: 爱吃香菜的猹
- * @LastEditTime: 2022-11-30 20:06:49
+ * @LastEditTime: 2022-11-30 20:12:13
  * @FilePath: \Aurora\src\view\Home\index.vue
  * @Description: 主页
 -->
@@ -45,7 +45,7 @@
                     font-weight: 900;">
                     <n-tab-pane name="match" tab="配对">
                         <div class="defaultmsg">
-                            <svg width="157" height="230">
+                            <svg width="187" height="230">
                                 <linearGradient id="my-cool-gradient" x2="1" y2="1">`
                                     <stop offset="0%" stop-color="#fd316c" />
                                     <stop offset="100%" stop-color="#ff5c3b" />
@@ -56,9 +56,7 @@
                                 <h2>开始配对</h2>
                                 <div class="title">当你给别人点赞后，成功配对的对象就会在这里出现。
                                 </div>
-                                
                             </div>
-
                         </div>
                     </n-tab-pane>
                     <n-tab-pane name="msg" tab="消息">
@@ -219,7 +217,7 @@ h2 {
                         width: 290px;
                         height: 103px;
                         top: 230px;
-                        left: 70px;
+                        left: 60px;
 
                         .title {
                             padding-left: 20px;
