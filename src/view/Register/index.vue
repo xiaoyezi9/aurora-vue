@@ -2,7 +2,7 @@
  * @Author: 爱吃香菜的猹
  * @Date: 2022-11-30 20:33:03
  * @LastEditors: 爱吃香菜的猹
- * @LastEditTime: 2022-12-01 14:10:01
+ * @LastEditTime: 2022-12-01 20:35:05
  * @FilePath: \Aurora\src\view\Register\index.vue
  * @Description: 
 -->
